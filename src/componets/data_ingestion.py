@@ -10,6 +10,9 @@ import pandas as pd
 from src.componets.data_transformation import DataTransformation
 from src.componets.data_transformation import DataTransformationConfig
 
+from src.componets.model_trainer import ModelTrainerConfig
+from src.componets.model_trainer import ModelTrainner
+
 
 
 
@@ -49,10 +52,14 @@ class DataIngestion:
         except Exception as e:
             raise Custom_exception_handling(e,sys)
             
+          
             
 if __name__ =="__main__":
     obj=DataIngestion()
     train_data,test_data=obj.initiate_data_ingestion()
     
     data_trasformaton=DataTransformation()
-    data_trasformaton.initiate_data_transformation(train_data,test_data)
+    train_arr,test_arr,_=data_trasformaton.initiate_data_transformation(train_data,test_data)
+    
+    model_trainner=ModelTrainner()
+    print(model_trainner.initiate_model_trainner(train_arr,test_arr))
