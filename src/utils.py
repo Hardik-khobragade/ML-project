@@ -4,10 +4,10 @@ import numpy as np
 import pandas as pd
 import dill
 from sklearn.metrics import r2_score
-
-
+from sklearn.model_selection import GridSearchCV
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) 
 from src.exception import Custom_exception_handling
+import pickle
 
 def save_object(file_path, obj):
     try:
@@ -21,14 +21,19 @@ def save_object(file_path, obj):
     except Exception as e:
         raise Custom_exception_handling(e, sys)
             
-def evalute_model(X_train,y_train,X_test,y_test,models):
+def evalute_model(X_train,y_train,X_test,y_test,models,params):
     try:
         
         report={}
         
         for i in range (len(list(models))):
             model = list(models.values())[i]
+            para= list(params.values())[i]
             
+            grid_cv=GridSearchCV(model,para,cv=3)
+            grid_cv.fit(X_train,y_train)
+            
+            model.set_params(**grid_cv.best_params_)
             model.fit(X_train,y_train)
             
             y_train_pred=model.predict(X_train)
@@ -44,5 +49,10 @@ def evalute_model(X_train,y_train,X_test,y_test,models):
     except Exception as e:
         raise Custom_exception_handling(e, sys)      
 
-    
+def load_object(file_path):
+    try:
+        with open(file_path, "rb") as file_obj:
+            return pickle.load(file_obj)
+    except Exception as e:
+        raise Custom_exception_handling(e, sys)    
     

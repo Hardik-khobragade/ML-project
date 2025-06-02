@@ -46,7 +46,43 @@ class ModelTrainner:
                 "CatBoostRegressor": CatBoostRegressor(verbose=False),
                 "DecisionTree": DecisionTreeClassifier()
             }
-            model_report: dict=evalute_model( X_train, y_train, X_test, y_test,models)
+            
+            params = {
+                "LinearRegression": {},
+                "RandomForestRegressor": {
+                    "n_estimators": [100],
+                    "max_depth": [None, 10],
+                },
+                "GradientBoostingRegressor": {
+                    "n_estimators": [100],
+                    "learning_rate": [0.1],
+                    "max_depth": [3, 5],
+                },
+                "AdaBoostRegressor": {
+                    "n_estimators": [50],
+                    "learning_rate": [1.0],
+                },
+                "KNeighborsRegressor": {
+                    "n_neighbors": [5],
+                    "weights": ["uniform"],
+                },
+                "XGBRegressor": {
+                    "n_estimators": [100],
+                    "learning_rate": [0.1],
+                    "max_depth": [3, 5],
+                },
+                "CatBoostRegressor": {
+                    "iterations": [100],
+                    "learning_rate": [0.1],
+                    "depth": [3, 6],
+                },
+                "DecisionTree": {
+                    "max_depth": [None, 10],
+                    "criterion": ["gini"],
+                }
+            }
+            
+            model_report: dict=evalute_model( X_train, y_train, X_test, y_test,models,params)
             
             ##to get best model score in dict
             best_model_score=max(model_report.values())
@@ -68,6 +104,7 @@ class ModelTrainner:
             predicted=best_model.predict(X_test)
             
             r2_scorred=r2_score(y_test,predicted)
+            
             
             return r2_scorred
             
